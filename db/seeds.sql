@@ -1,4 +1,4 @@
-INSERT INTO departments (department_name,)
+INSERT INTO departments (department_name)
 VALUES 
 ('Engine building'),
 ('Exhaust systems'),
