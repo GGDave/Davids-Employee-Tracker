@@ -4,9 +4,9 @@ const mysql = require("mysql2");
 const dbConnect = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "",
-    password: "",
-    database: "",
+    user: "root",
+    password: "BLACKraptor50!!!",
+    database: "FloresPerformance_db",
 });
 
 dbConnect.connect((err) => {
@@ -170,6 +170,12 @@ function addEmployee() {
                 .prompt([
                     {
                         type: "list",
+                        name: "roleId",
+                        message: "Select the role for the employee:",
+                        choices: roles.map((r) => ({ name: r.title, value: r.id })),
+                    },
+                    {
+                        type: "list",
                         name: "managerId",
                         message: "Select the manager for the employee:",
                         choices: managers.map((m) => ({ name: m.name, value: m.id })),
@@ -183,12 +189,6 @@ function addEmployee() {
                         type: "input",
                         name: "lastName",
                         message: "Enter the employee's last name:",
-                    },
-                    {
-                        type: "list",
-                        name: "roleId",
-                        message: "Select the role for the employee:",
-                        choices: roles.map((r) => ({ name: r.title, value: r.id })),
                     },
                 ])
                 .then((answer) => {
@@ -204,3 +204,41 @@ function addEmployee() {
     });
 }
 
+function updateEmployeeRole() {
+    // this command will fetch roles from the database
+    const queryRoles = "SELECT id, title FROM roles";
+    dbConnect.query(queryRoles, (err, roles) => {
+        if (err) throw err;
+
+        // this command will fetch employees from the database
+        const queryEmployees = "SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employee";
+        dbConnect.query(queryEmployees, (err, employees) => {
+            if (err) throw err;
+
+            inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        name: "employeeId",
+                        message: "Select the employee whose role you want to update:",
+                        choices: employees.map((e) => ({ name: e.name, value: e.id })),
+                    },
+                    {
+                        type: "list",
+                        name: "roleId",
+                        message: "Select the new role for the employee:",
+                        choices: roles.map((r) => ({ name: r.title, value: r.id })),
+                    }
+                ])
+                .then((answer) => {
+                    const query = "UPDATE employee SET role_id = ? WHERE id = ?";
+                    const values = [answer.roleId, answer.employeeId];
+                    dbConnect.query(query, values, (err, res) => {
+                        if (err) throw err;
+                        console.log("Employee role updated successfully!");
+                        start();
+                    });
+                });
+        });
+    });
+}
