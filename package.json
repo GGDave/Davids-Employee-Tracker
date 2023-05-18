@@ -11,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "inquirer": "^9.2.2",
-    "mysql": "^2.18.1"
+    "dotenv": "^16.0.3",
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.31.1"
   }
 }
